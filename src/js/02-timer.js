@@ -20,7 +20,6 @@ const options = {
       return Notiflix.Notify.failure('Please choose a date in the future');
     }
     btnStart.disabled = false;
-    console.log(firstSelectedDate);
     return firstSelectedDate;
   },
 };
@@ -33,6 +32,7 @@ const interfaceUpgrade = () => {
 
   timerChild.forEach(element => {
     element.style.textAlign = 'center';
+
     element.firstElementChild.style.display = 'block';
     element.firstElementChild.style.fontSize = '28px';
 
@@ -56,23 +56,25 @@ const convertMs = ms => {
 
 const addLeadingZero = value => value.toString().padStart(2, '0');
 
-  const counter = () => {
-    const nowDate = new Date().getTime();
-    const time = firstSelectedDate - nowDate;
-    const convertedTime = convertMs(time);
-    const convertedTimeValue = Object.values(convertedTime);
-    timerChild.forEach((element, index) => {
-      element.firstElementChild.textContent = addLeadingZero(
-        convertedTimeValue[index]
-      );
-    });
+const counter = () => {
+  const nowDate = new Date().getTime();
+  const time = firstSelectedDate - nowDate;
+  const convertedTime = convertMs(time);
+  const convertedTimeValue = Object.values(convertedTime);
+  timerChild.forEach((element, index) => {
+    element.firstElementChild.textContent = addLeadingZero(convertedTimeValue[index]);
+  });
+};
+
+
+const counterAndPrint = (call, delay) => {
+  return () => {
+    call();
+    setInterval(call,delay);
+  }
   };
 
-const counterAndPrint = () => {
-  counter();
-  setInterval(counter, 1000);
-};
 
 interfaceUpgrade();
 flatpickr(input, options);
-btnStart.addEventListener('click', counterAndPrint);
+btnStart.addEventListener("click", counterAndPrint(counter, 1000));
