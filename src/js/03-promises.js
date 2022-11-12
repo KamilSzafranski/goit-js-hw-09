@@ -25,7 +25,7 @@ const startCreatingPromises = event => {
   const amountValue = Number(amount.value);
   let stepValue = Number(step.value);
   let delayValue = Number(delay.value);
-  let numberOfPromises = i + 1;
+  let numberOfPromises;
 
   for (let i = 0; i < amountValue; i++) {
     numberOfPromises = i + 1;
