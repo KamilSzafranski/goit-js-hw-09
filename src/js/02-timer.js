@@ -69,7 +69,10 @@ const addLeadingZero = value => value.toString().padStart(2, '0');
 const counter = () => {
   const nowDate = new Date().getTime();
   const time = firstSelectedDate - nowDate;
-  if (time < 0) return;
+  if (time < 0) {
+    clearInterval(interval);
+    return;
+  }
   const convertedTime = convertMs(time);
   const convertedTimeValue = Object.values(convertedTime);
   timerChild.forEach((element, index) => {
