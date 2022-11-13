@@ -8,6 +8,15 @@ const timerChild = [...timer.children];
 const input = document.querySelector('input#datetime-picker');
 let firstSelectedDate = 0;
 const presentDate = new Date().getTime();
+let interval = null;
+
+const stopCount = buttonDisabled => {
+  btnStart.disabled = buttonDisabled;
+  clearInterval(interval);
+  timerChild.forEach(element => {
+    element.firstElementChild.textContent = '00';
+  });
+};
 
 const options = {
   enableTime: true,
@@ -17,9 +26,10 @@ const options = {
   onClose(selectedDates) {
     firstSelectedDate = selectedDates[0].getTime();
     if (firstSelectedDate < presentDate) {
+      stopCount(true);
       return Notiflix.Notify.failure('Please choose a date in the future');
     }
-    btnStart.disabled = false;
+    stopCount(false);
     return firstSelectedDate;
   },
 };
@@ -59,22 +69,24 @@ const addLeadingZero = value => value.toString().padStart(2, '0');
 const counter = () => {
   const nowDate = new Date().getTime();
   const time = firstSelectedDate - nowDate;
+  if (time < 0) return;
   const convertedTime = convertMs(time);
   const convertedTimeValue = Object.values(convertedTime);
   timerChild.forEach((element, index) => {
-    element.firstElementChild.textContent = addLeadingZero(convertedTimeValue[index]);
+    element.firstElementChild.textContent = addLeadingZero(
+      convertedTimeValue[index]
+    );
   });
 };
 
-
 const counterAndPrint = (call, delay) => {
   return () => {
+    btnStart.disabled = true;
     call();
-    setInterval(call,delay);
-  }
+    interval = setInterval(call, delay);
   };
-
+};
 
 interfaceUpgrade();
 flatpickr(input, options);
-btnStart.addEventListener("click", counterAndPrint(counter, 1000));
+btnStart.addEventListener('click', counterAndPrint(counter, 1000));
